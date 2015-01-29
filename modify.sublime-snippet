@@ -1,0 +1,9 @@
+<snippet>
+	<content><![CDATA[
+dn: ${1:<Distingushed Name>}
+changetype: modify
+]]></content>
+	<tabTrigger>modify</tabTrigger>
+	<scope>text.ldif</scope>
+	<description>modify entry</description>
+</snippet>

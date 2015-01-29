@@ -1,0 +1,10 @@
+{
+	"scope": "meta.changetype.modrdn.ldif",
+	"completions":
+	[
+		"newrdn:",
+		"deleteoldrdn: 0",
+		"deleteoldrdn: 1",
+		"newsuperior:"
+	]
+}

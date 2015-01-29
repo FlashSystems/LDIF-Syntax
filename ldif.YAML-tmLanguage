@@ -1,0 +1,228 @@
+# [PackageDev] target_format: plist, ext: tmLanguage
+---
+name: LDAP Data Interchange Format
+scopeName: text.ldif
+fileTypes: ["ldif"]
+uuid: 471950fc-87e4-4a61-9e3f-93687ec5c381
+
+# Assignment of scopes
+# Attribute Names
+#   Normal attributes  --> variable.language.attribute.ldif
+#   Modify specifications --> entity.name.function.*.ldif
+#   Special attributes (modrdn, etc.)  --> support.constant.attribute.*.ldif
+#   Master attributes (dn, objectclass, control) -->  keyword.other.ldif
+#   Attribute options --> constant.other.options.ldif
+# Attribute Values
+#   safestring --> string.quoted.safe.ldif
+#   base64 --> string.quoted.base64.ldif
+#   url --> stringquoted.url.ldif
+#   Konstant values (Predefined values)
+#     Integer --> constant.numeric.ldif
+# Meta attributes
+#   Version --> support.constant.attribute.version.ldif
+# Comments  --> comment.ldif
+# Delimiter --> comment.delimiter.ldif
+# Invalid lines
+#   Containing ivalid characters --> invalid.illegal.character.ldif
+#   Invalid syntax --> invalid.illegal.syntax.ldif
+
+repository:
+  comment:
+    comment: Comments must be reusable because they can also appear within modify blocks.
+    name: comment.ldif
+    match: '^\s*#.*$'
+
+  check_safestring:
+    comment: Highlight invalid characters in a LDIF safestring
+    name: invalid.illegal.character.ldif
+    match: '[^\r\n\x{01}-\x{09}\x{0B}-\x{0C}\x{0E}-\x{1F}\x{21}-\x{39}\x{3B}\x{3D}-\x{7F}\x{01}-\x{09}\x{0B}-\x{0C}\x{0E}-\x{7F}]+'
+
+  check_base64_string:
+    comment: Highlight invalid characters in a LDIF base64 string
+    name: invalid.illegal.character.ldif
+    match: '[^\r\n+/=A-Za-z0-9 ]+'
+
+  check_url_string:
+    comment: Highlight invalid characters in a LDIF url string
+    name: invalid.illegal.character.ldif
+    match: "[^\r\na-zA-Z0-9$.+!*(),_{}|\\\\^~\\[\\]`<>#%'\";/?:@&=-]"
+
+
+  attribute_safestring:
+    comment: Attribute (safe string)
+    contentName: string.quoted.safe.ldif
+    begin: '^([a-zA-Z0-9-]+)(;[a-zA-Z0-9;-]+)*:(?![:<])\s*'
+    beginCaptures:
+      '1': {name: variable.language.attribute.ldif}
+      '2': {name: constant.other.options.ldif}
+    end: "^(?! )"
+    patterns:
+    - include: "#check_safestring"
+
+  attribute_base64:
+    comment: Attribute (base64)
+    contentName: string.quoted.base64.ldif
+    begin: '^([a-zA-Z0-9-]+)(;[a-zA-Z0-9;-]+)*::\s*'
+    beginCaptures:
+      '1': {name: variable.language.attribute.ldif}
+      '2': {name: constant.other.options.ldif}
+    end: "^(?! )"
+    patterns:
+    - include: "#check_base64_string"
+
+  attribute_url:
+    comment: Attribute (url)
+    contentName: string.quoted.base64.ldif
+    begin: '^([a-zA-Z0-9-]+)(;[a-zA-Z0-9;-]+)*:<\s*'
+    beginCaptures:
+      '1': {name: variable.language.attribute.ldif}
+      '2': {name: constant.other.options.ldif}
+    end: "^(?! )"
+    patterns:
+    - include: "#check_url_string"
+
+  attribute_special_safestring:
+    comment: Attribute (safe string)
+    contentName: string.quoted.safe.ldif
+    begin: '^(?i:(dn|objectclass))(;[a-zA-Z0-9;-]+)*:(?![:<])\s*'
+    beginCaptures:
+      '1': {name: keyword.other.ldif}
+      '2': {name: constant.other.options.ldif}
+    end: "^(?! )"
+    patterns:
+    - include: "#check_safestring"
+
+  attribute_special_base64:
+    comment: Attribute (base64)
+    contentName: string.quoted.base64.ldif
+    begin: '^(?i:(dn|objectclass))(;[a-zA-Z0-9;-]+)*::\s*'
+    beginCaptures:
+      '1': {name: keyword.other.ldif}
+      '2': {name: constant.other.options.ldif}
+    end: "^(?! )"
+    patterns:
+    - include: "#check_base64_string"
+
+  delimiter:
+    comment: Block delimiter for multiple changes.
+    name: comment.delimiter.ldif
+    match: '^-$'
+
+  rest_is_illegal:
+    comment: Marks everything else als illegal. Is used as a catch-all statement.
+    name: invalid.illegal.syntax.ldif
+    match: ".*"
+
+patterns:
+- comment: Version-Line
+  name: support.constant.attribute.version.ldif
+  match: 'version:\s*([0-9])(.*)'
+  captures:
+    '1': {name: constant.numeric.ldif}
+    '2': {name: invalid.illegal.syntax.ldif}
+
+- include: "#comment"
+
+- comment: Highlighter for LDAP change record add
+  name: meta.changetype.add.ldif
+  begin: '^(changetype):\s(add)$'
+  beginCaptures:
+    '1': {name: entity.name.function.add.ldif}
+    '2': {name: variable.parameter.changetype.add.ldif}
+  end: '(?=dn)'
+  patterns:
+  - include: "#comment"
+  - include: "#attribute_safestring"
+  - include: "#attribute_base64"
+  - include: "#attribute_url"
+  - include: "#delimiter"
+  - include: "#rest_is_illegal"
+
+- comment: Highlighter for LDAP change record delete
+  name: meta.changetype.delete.ldif
+  begin: '^(changetype):\s(delete)$'
+  beginCaptures:
+    '1': {name: entity.name.function.delete.ldif}
+    '2': {name: variable.parameter.changetype.delete.ldif}
+  end: '(?=dn)'
+  patterns:
+  - include: "#comment"
+  - include: "#rest_is_illegal"
+
+- comment: "Highlighter for LDAP change record modify"
+  name: meta.changetype.modify.ldif
+  begin: '^(changetype):\s(modify)$'
+  beginCaptures:
+    '1': {name: entity.name.function.modify.ldif}
+    '2': {name: variable.parameter.changetype.modify.ldif}
+  end: '(?=dn)'
+  patterns:
+  - include: "#comment"
+  - comment: "Modification specification (mod-spec)"
+    name: entity.name.function.modspec.ldif
+    match: '^(add|delete|replace):\s*([a-zA-Z0-9-]+)(;[a-zA-Z0-9;-]+)*'
+    captures:
+      '1': {name: support.constant.attribute.modspec.ldif}
+      '2': {name: variable.language.attribute.ldif}
+      '3': {name: constant.other.options.ldif}
+  - include: "#attribute_safestring"
+  - include: "#attribute_base64"
+  - include: "#attribute_url"
+  - include: "#delimiter"
+  - include: "#rest_is_illegal"
+
+- comment: "Highlighter for LDAP change record modrdn"
+  name: meta.changetype.modrdn.ldif
+  begin: '^(changetype):\s(modrdn)$'  
+  beginCaptures:
+    '1': {name: entity.name.function.modrdn.ldif}
+    '2': {name: variable.parameter.changetype.modify.ldif}
+  end: '(?=dn)'
+  patterns:
+  - include: "#comment"
+  - comment: NewRDN-Attribute with safestring
+    contentName: string.quoted.safe.ldif
+    begin: '^(newrdn):(?![:])\s*'
+    beginCaptures:
+      '1': {name: entity.name.function.newrdn.ldif}
+    end: "^(?! )"
+    patterns:
+    - include: "#check_safestring"
+  - comment: NewRDN-Attribute with base64
+    contentName: string.quoted.base64.ldif
+    begin: '^(newrdn)::\s*'
+    beginCaptures:
+      '1': {name: entity.name.function.newrdn.ldif}
+    end: "^(?! )"
+    patterns:
+    - include: "#check_base64_string"
+  - comment: DeleteOldRDN-Attribute
+    name: entity.name.function.deleteoldrdn.ldif
+    match: '^deleteoldrdn:\s*([01])$'
+    captures:
+      '1': {name: constant.numeric.ldif}
+  - comment: newSuperior-Attribute with safestring
+    contentName: string.quoted.safe.ldif
+    begin: '^(newsuperior):(?![:])\s*'
+    beginCaptures:
+      '1': {name: entity.name.function.newsuperior.ldif}
+    end: "^(?! )"
+    patterns:
+    - include: "#check_safestring"
+  - comment: newSuperior-Attribute with base64
+    contentName: string.quoted.base64.ldif
+    begin: '^(newsuperior)::\s*'
+    beginCaptures:
+      '1': {name: entity.name.function.newsuperior.ldif}
+    end: "^(?! )"
+    patterns:
+    - include: "#check_base64_string"
+  - include: "#delimiter"
+  - include: "#rest_is_illegal"
+
+- include: "#attribute_special_safestring"
+- include: "#attribute_special_base64"
+- include: "#attribute_safestring"
+- include: "#attribute_base64"
+- include: "#attribute_url"
+- include: "#rest_is_illegal"

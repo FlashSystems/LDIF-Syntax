@@ -1,0 +1,10 @@
+<snippet>
+	<content><![CDATA[
+delete: ${1:<Attribiute>}
+-
+
+]]></content>
+	<tabTrigger>delete</tabTrigger>
+	<scope>meta.changetype.modify.ldif</scope>
+	<description>delete attribute</description>
+</snippet>

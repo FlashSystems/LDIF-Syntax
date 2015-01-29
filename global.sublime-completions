@@ -1,0 +1,13 @@
+{
+	"scope": "text.ldif",
+	"completions":
+	[
+		"version: 1",
+		"changetype: add",
+		"changetype: delete",
+		"changetype: modrdn",
+		"changetype: modify",
+		"dn:",
+		"objectclass:",
+	]
+}

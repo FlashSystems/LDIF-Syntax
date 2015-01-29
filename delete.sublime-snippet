@@ -1,0 +1,9 @@
+<snippet>
+	<content><![CDATA[
+dn: ${1:<Distingushed Name>}
+changetype: delete
+]]></content>
+	<tabTrigger>delete</tabTrigger>
+	<scope>text.ldif</scope>
+	<description>delete entry</description>
+</snippet>

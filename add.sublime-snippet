@@ -1,0 +1,10 @@
+<snippet>
+	<content><![CDATA[
+dn: ${1:<Distingushed Name>}
+changetype: add
+objectclass: ${2:<ObjectClass>}
+]]></content>
+	<tabTrigger>add</tabTrigger>
+	<scope>text.ldif</scope>
+	<description>add entry</description>
+</snippet>

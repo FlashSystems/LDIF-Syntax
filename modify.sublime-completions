@@ -1,0 +1,9 @@
+{
+	"scope": "meta.changetype.modify.ldif",
+	"completions":
+	[
+		"add:",
+		"replace:",
+		"delete:"
+	]
+}

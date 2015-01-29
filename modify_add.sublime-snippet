@@ -1,0 +1,11 @@
+<snippet>
+	<content><![CDATA[
+add: ${1:<Attribiute>}
+${1:<Attribute>}: ${2:<Value>}
+-
+
+]]></content>
+	<tabTrigger>add</tabTrigger>
+	<scope>meta.changetype.modify.ldif</scope>
+	<description>add attribute</description>
+</snippet>

@@ -1,0 +1,11 @@
+<snippet>
+	<content><![CDATA[
+dn: ${1:<Distingushed Name>}
+newrdn: ${2:<New realtive DN>}
+deleteoldrdn: 1
+newsuperior: ${3:<New superior>}
+]]></content>
+	<tabTrigger>modrdn</tabTrigger>
+	<scope>text.ldif</scope>
+	<description>modify entry rdn</description>
+</snippet>
